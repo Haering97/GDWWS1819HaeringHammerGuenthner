@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/Haering97/GDWWS1819HaeringHammerGuenthner#readme",
   "dependencies": {
-    "express": "^4.16.4"
+    "es6-promise": "^4.2.5",
+    "express": "^4.16.4",
+    "isomorphic-fetch": "^2.2.1"
   }
 }

@@ -9,6 +9,8 @@ var fetcher = require('./fetcher');
 
 router.get('/',function (req,res,next) {
     res.send("Root");
+
+    res.send("Hey BUUUUUU");
 });
 
 router.get('/:start',function (req,res,next) {
@@ -30,6 +32,15 @@ router.get('/:start/:ziel/info',function (req,res,next) {
     res.send(start + ziel);
 });
 
+
+
+
+router.get('/:geo1/:geo2',function (req,res,next) {
+    var geo1 = req.param("geo1");
+    var geo2 = req.param("geo2");
+    fetcher.getInfo(geo1,geo2);
+    res.send(geo1 + geo2);
+});
 
 
 module.exports = router;

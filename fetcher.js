@@ -1,10 +1,10 @@
 class Fetcher{
 
-    static blabla(){
-        console.log("Test");
+     static fetch(){
     }
 
-
+    static logger(){
+    }
 
 }
 

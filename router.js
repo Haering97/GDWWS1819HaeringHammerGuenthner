@@ -9,8 +9,7 @@ var fetcher = require('./fetcher');
 
 router.get('/',function (req,res,next) {
     res.send("Root");
-
-    res.send("Hey BUUUUUU");
+    fetcher.getInfo();
 });
 
 router.get('/:start',function (req,res,next) {

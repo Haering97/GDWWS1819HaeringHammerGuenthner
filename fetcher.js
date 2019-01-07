@@ -1,14 +1,8 @@
-
-
-
 class Fetcher{
 
 
      static fetch(){
     }
-
-
-
 
     static coordinates (url){
 
@@ -17,12 +11,6 @@ class Fetcher{
                  return response.json();
             })
             .then(function(myJson) {
-
-                /*console.log(myJson);
-                console.log("----------------\n");
-                console.log(myJson.routes);
-                console.log("----------------\n");
-                console.log(myJson.routes[0].geometry);*/
 
                 var coordinates = myJson.routes[0].geometry;
                 console.log(coordinates);
@@ -36,10 +24,6 @@ class Fetcher{
         this.coordinates(reqURL);
     }
 
-/*
-    50.938415,7.750602%7C51.023056,7.560894
-    7.750602,50.938415|7.560894,51.020356
-*/
 }
 
 module.exports = Fetcher;

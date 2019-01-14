@@ -13,16 +13,20 @@ class Fetcher{
             .then(function(myJson) {
 
                 var coordinates = myJson.routes[0].geometry;
-                console.log(coordinates);
+                //console.log(coordinates);
                 return coordinates;
 
             });
     }
 
     static getInfo(geo1,geo2){
+
+        var latlong1 = Fetcher.getVerarbeiteteDaten(geo1);
+        var  latlong2 = Fetcher.getVerarbeiteteDaten(geo2);
         var reqURL = "https://api.openrouteservice.org/directions" +
             "?api_key=5b3ce3597851110001cf62489e05bd56cff244a7b5072edc85037ec5" +
-            "&coordinates=7.750602,50.938415" +
+            "&coordinates=" +
+            "7.750602,50.938415" +
             "|7.560894,51.020356" +
             "&profile=driving-car" +
             "&geometry_format=geojson&geometry_simplify=true&instructions=false";
@@ -51,29 +55,12 @@ class Fetcher{
 
     static GetergebnisGeoToCoor(ergebnisArray) {
 
-        var latAll = [];
-        var longAll = [];
-        var countryAll = [];
-        var cityAll = [];
-        var confidenceAll = [];
-
-            for (var index = 0; index < ergebnisArray.results.length; index++) {
-
-                latAll[index] = ergebnisArray.results[index].annotations.DMS.lat;
-                longAll[index] = ergebnisArray.results[index].annotations.DMS.lng;
-                countryAll[index] = ergebnisArray.results[index].components.country;
-                cityAll[index] = ergebnisArray.results[index].components.city;
-                confidenceAll[index] = ergebnisArray.results[index].confidence;
-            }
-
-            var ergebnisGefiltert = [];
-             ergebnisGefiltert[0] = latAll ;
-             ergebnisGefiltert[1] = longAll ;
-             ergebnisGefiltert[2] = countryAll ;
-             ergebnisGefiltert[3] = cityAll ;
-             ergebnisGefiltert[4] = confidenceAll ;
-
-             return Fetcher.datenVerarbeiten(ergebnisGefiltert);
+        var arrayKoor = [];
+               arrayKoor[0] = ergebnisArray.results[0].annotations.DMS.lat;
+               arrayKoor[1] = ergebnisArray.results[0].annotations.DMS.lng;
+               console.log(arrayKoor[0]);
+               console.log(arrayKoor[1]);
+               return arrayKoor;
     }
 
 
@@ -113,7 +100,7 @@ class Fetcher{
         }
 
         confidenceAvg = confidenceAvg / datenArray[4].length;
-       // console.log("Con AVg : "+confidenceAvg);
+        console.log("Con AVg : "+confidenceAvg);
         /* Durchschnittliche Genauigkeit Ende */
 
 
@@ -125,7 +112,7 @@ class Fetcher{
         }
 
         LatAvg = LatAvg / datenArray[0].length;
-        // console.log("Con AVg : "+confidenceAvg);
+         console.log("Lat AVg : "+LatAvg);
         /* Durchschnittliche Latitude Ende */
 
 
@@ -137,7 +124,7 @@ class Fetcher{
         }
 
         LongAvg = LongAvg / datenArray[1].length;
-        // console.log("Con AVg : "+confidenceAvg);
+         console.log("Long AVg : "+ LongAvg);
         /* Durchschnittliche Longitude Ende */
 
 

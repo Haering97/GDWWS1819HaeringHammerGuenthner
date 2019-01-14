@@ -22,6 +22,7 @@ router.get('/:start',function (req,res,next) {
 router.get('/:start/:ziel',function (req,res,next) {
     var start = req.params.start;
     var ziel= req.params.ziel;
+    fetcher.getInfo(start,ziel);
     res.send(start + ziel );
 });
 

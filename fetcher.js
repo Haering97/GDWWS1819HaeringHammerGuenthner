@@ -21,8 +21,22 @@ class Fetcher{
 
     static getInfo(geo1,geo2){
 
-        var latlong1 = Fetcher.getVerarbeiteteDaten(geo1);
-        var  latlong2 = Fetcher.getVerarbeiteteDaten(geo2);
+         const promise1 = Fetcher.getVerarbeiteteDaten(geo1);
+         promise1.then(function (value) {
+             var latlong1 = value;
+         });
+         const promise2 =Fetcher.getVerarbeiteteDaten(geo2);
+             promise2.then(function (value) {
+             var  latlong2 = value;
+         });
+            console.log("\ngetInfo :");
+            console.log(latlong1);
+            return latlong1;
+
+
+
+
+
         var reqURL = "https://api.openrouteservice.org/directions" +
             "?api_key=5b3ce3597851110001cf62489e05bd56cff244a7b5072edc85037ec5" +
             "&coordinates=" +
@@ -56,10 +70,8 @@ class Fetcher{
     static GetergebnisGeoToCoor(ergebnisArray) {
 
         var arrayKoor = [];
-               arrayKoor[0] = ergebnisArray.results[0].annotations.DMS.lat;
-               arrayKoor[1] = ergebnisArray.results[0].annotations.DMS.lng;
-               console.log(arrayKoor[0]);
-               console.log(arrayKoor[1]);
+               arrayKoor[0] = ergebnisArray.results[0].geometry.lat;
+               arrayKoor[1] = ergebnisArray.results[0].geometry.lng;
                return arrayKoor;
     }
 
@@ -76,7 +88,17 @@ class Fetcher{
                  return respone.json();
              })
              .then(function (myJson) {
-                return Fetcher.GetergebnisGeoToCoor(myJson);
+                var tmp = Fetcher.GetergebnisGeoToCoor(myJson);
+                console.log("Fertig Gefetcht : ");
+                console.log(tmp);
+                return new Promise(function (resolve,reject) {
+                    console.log("Its Done");
+                    if(tmp != null){
+                        resolve(tmp)
+                    }else {
+                        reject("Failure")
+                    }
+                })
              });
 
     }

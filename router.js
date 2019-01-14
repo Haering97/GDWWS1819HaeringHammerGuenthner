@@ -9,7 +9,8 @@ var fetcher = require('./fetcher');
 
 router.get('/',function (req,res,next) {
     res.send("Root");
-    fetcher.getInfo();
+    //fetcher.geoToCoor("London");
+    fetcher.coorToGeo("51.509865","-0.118092")
 });
 
 router.get('/:start',function (req,res,next) {

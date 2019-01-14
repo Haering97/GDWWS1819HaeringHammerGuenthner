@@ -29,6 +29,8 @@ class Fetcher{
         this.coordinates(reqURL);
     }
 
+
+    /*  */
     static coorToGeo(lat, long){
 
          var url = "https://api.opencagedata.com/geocode/v1/json" +
@@ -45,7 +47,38 @@ class Fetcher{
              })
     }
 
-    static geoToCoor (place) {
+
+
+    static GetergebnisGeoToCoor(ergebnisArray) {
+
+        var latAll = [];
+        var longAll = [];
+        var countryAll = [];
+        var cityAll = [];
+        var confidenceAll = [];
+
+            for (var index = 0; index < ergebnisArray.results.length; index++) {
+
+                latAll[index] = ergebnisArray.results[index].annotations.DMS.lat;
+                longAll[index] = ergebnisArray.results[index].annotations.DMS.lng;
+                countryAll[index] = ergebnisArray.results[index].components.country;
+                cityAll[index] = ergebnisArray.results[index].components.city;
+                confidenceAll[index] = ergebnisArray.results[index].confidence;
+            }
+
+            var ergebnisGefiltert = [];
+             ergebnisGefiltert[0] = latAll ;
+             ergebnisGefiltert[1] = longAll ;
+             ergebnisGefiltert[2] = countryAll ;
+             ergebnisGefiltert[3] = cityAll ;
+             ergebnisGefiltert[4] = confidenceAll ;
+
+             return Fetcher.datenVerarbeiten(ergebnisGefiltert);
+    }
+
+
+    /*  */
+    static getVerarbeiteteDaten (place) {
 
          var url = "https://api.opencagedata.com/geocode/v1/json?" +
              "q=" + place +
@@ -56,10 +89,67 @@ class Fetcher{
                  return respone.json();
              })
              .then(function (myJson) {
-                 console.log(myJson)
-             })
+                return Fetcher.GetergebnisGeoToCoor(myJson);
+             });
 
     }
+
+    static datenVerarbeiten(datenArray){
+         /* datenArray[X]
+         * 0 = Lat
+         * 1 = Long
+         * 2 = Country
+         * 3 = City
+         * 4 = Confidence
+         * BERECHNET :
+         *      Average of : Lat , Long , Confidence*/
+
+
+         /* Durchschnittliche Genauigkeit Anfang */
+         var confidenceAvg = 0;
+
+        for(let i = 0 ; i< datenArray[4].length ; i++){
+            confidenceAvg += datenArray[4][i];
+        }
+
+        confidenceAvg = confidenceAvg / datenArray[4].length;
+       // console.log("Con AVg : "+confidenceAvg);
+        /* Durchschnittliche Genauigkeit Ende */
+
+
+        /* Durchschnittliche Latitude Anfang */
+        var LatAvg = 0;
+
+        for(let i = 0 ; i< datenArray[0].length ; i++){
+            LatAvg += datenArray[0][i];
+        }
+
+        LatAvg = LatAvg / datenArray[0].length;
+        // console.log("Con AVg : "+confidenceAvg);
+        /* Durchschnittliche Latitude Ende */
+
+
+        /* Durchschnittliche Longitude Anfang */
+        var LongAvg = 0;
+
+        for(let i = 0 ; i< datenArray[1].length ; i++){
+            LongAvg += datenArray[1][i];
+        }
+
+        LongAvg = LongAvg / datenArray[1].length;
+        // console.log("Con AVg : "+confidenceAvg);
+        /* Durchschnittliche Longitude Ende */
+
+
+
+
+
+    }
+
+
+
+
+
 
 
 

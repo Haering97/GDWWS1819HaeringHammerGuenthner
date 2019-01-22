@@ -14,7 +14,7 @@ class Fetcher{
                 })
                 .then(function (myJson) {
                     if (myJson) resolve(myJson);
-                    else reject("No Data");
+                    else reject("No Data 2");
                 });
 
         });
@@ -28,8 +28,8 @@ class Fetcher{
 
             var promise = new Promise(function (resolve, reject) {
 
-                var data1;
-                var data2;
+                var data1=[];
+                var data2=[];
                 var latlong1 = Fetcher.getVerarbeiteteDaten(geo1);
                 latlong1.then(function (data) {
                     console.log("data 1 : " + data);
@@ -42,12 +42,10 @@ class Fetcher{
                      data2 = data;
               });
 
-                if(data1 && data2){
+                if(data1[1] && data2[1]){
                     resolve(data1,data2);
                 }
-                else reject("NO data");
-
-                return promise;
+                else reject("NO data 1");
 
             });
         promise.then(function (data1,data2) {

@@ -1,6 +1,8 @@
 class Fetcher{
 
 
+
+
      static fetch(){
     }
 
@@ -20,88 +22,137 @@ class Fetcher{
         });
         return promise;
     }
+    static getWeather(latlong1,latlong2){
+         return new Promise(function (resolve, reject) {
 
+                var url1 = "http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=h4SEQjr8kojz6kIL0EBXqO4wXbVZNnl7&q="+ latlong1[0] +"%2C"+ latlong1[1];
+                fetch(url1)
+                    .then(function (response) {
+                        return response.json();
+                    })
+                    .then(function (myJson) {
+                        console.log("keyShit");
+                        console.log(myJson);
+                        var key1 = myJson.Key;
+                    });
+
+                     var url2 = "http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=h4SEQjr8kojz6kIL0EBXqO4wXbVZNnl7&q="+ latlong2[0] +"%2C"+ latlong2[1];
+                     fetch(url2)
+                         .then(function (response) {
+                             response.json();
+                         })
+                         .then(function (myJson) {
+                             var key2 = myJson.Key;
+                         });
+
+                     if(key1 && key2)resolve(key1);
+                     else reject(err);
+
+         });
+    }
 
 
 
     static getInfo(geo1,geo2) {
 
-            var promise = new Promise(function (resolve, reject) {
+         return new Promise(function (resolve, reject) {
 
-                var data1=[];
-                var data2=[];
-                var latlong1 = Fetcher.getVerarbeiteteDaten(geo1);
-                latlong1.then(function (data) {
-                    console.log("data 1 : " + data);
-                         data1 = data;
-                });
 
-             var latlong2 = Fetcher.getVerarbeiteteDaten(geo2);
-              latlong2.then(function (data) {
-                  console.log("data 2 " + data);
-                     data2 = data;
-              });
+             var promise1 = Fetcher.getVerarbeiteteDaten(geo1,geo2);
 
-                if(data1[1] && data2[1]){
-                    resolve(data1,data2);
-                }
-                else reject("NO data 1");
+             promise1.then(function (array) {
+                 console.log(array[0]);
+                 console.log(array[1]);
 
-            });
-        promise.then(function (data1,data2) {
+                 var latlong1 = array[0];
+                 var latlong2 = array[1];
+                 var promise3 =  Fetcher.getWeather(latlong1,latlong2);
 
-            var promise2 = Fetcher.coordinates("https://api.openrouteservice.org/directions" +
-                    "?api_key=5b3ce3597851110001cf62489e05bd56cff244a7b5072edc85037ec5" +
-                    "&coordinates=" + data1[0]+
-                    "," + data1[1] +
-                    data2[0]+"|,51.020356" + data2[1]+
-                    "&profile=foot-walking" +
-                    "&geometry_format=geojson&geometry_simplify=true&instructions=false%preference=recommended");
+
+                 var urlRoute = "https://api.openrouteservice.org/directions?api_key=5b3ce3597851110001cf62489e05bd56cff244a7b5072edc85037ec5&coordinates=" + latlong1[1] +"," + latlong1[0] + "%7C"+ latlong2[1] + ","+latlong2[0] + "&profile=foot-hiking&preference=recommended&format=geojson&units=m&language=de&extra_info=surface&geometry_simplify=true&instructions=true&instructions_format=html&elevation=true" ;
+                 console.log(urlRoute);
+                 var promise2 = Fetcher.coordinates(urlRoute);
 
                  promise2.then(function (data) {
-                var coordinates = data.routes[0].geometry;
-                console.log("coordinates");
-                console.log(coordinates);
-                return coordinates;
-                   });
+                     var coordinates = data.features[0].geometry;
+                     var summary = data.features[0].properties.summary;
+                     var coordinates = data.features[0].geometry;
+                     console.log("coordinates");
+                     console.log(coordinates);
+                     console.log("summary");
+                     console.log(summary);
+
+                     if(summary)resolve(coordinates);
+                     else reject(err);
+                 });
 
                  promise2.catch(function (err) {
                      console.log(err);
+                 });
+
+                 promise3.then(function (key1) {
+                     console.log("key1");
+                     console.log(key1);
                  })
 
-            });
-    }
+
+             });
+         });
+     }
+
+
+
+
 
     /*  */
-    static getVerarbeiteteDaten (place) {
+    static getVerarbeiteteDaten (geo1,geo2) {
 
 
         var promise = new Promise(function (resolve,reject) {
-            var arrayKoor = [];
+            var arrayKoor1 = [];
+            var arrayKoor2 = [];
 
 
             var url = "https://api.opencagedata.com/geocode/v1/json?" +
-                "q=" + place +
+                "q=" + geo1 +
                 "&key=01a447136c764adc91012c7e9d348dbf";
 
             fetch(url)
                 .then(function (response) {
-                    console.log("responded");
                     return response.json();
                 })
                 .then(function (myJson) {
-                    console.log("Fertig Gefetcht : ");
-                    arrayKoor[0] = myJson.results[0].geometry.lat;
-                    arrayKoor[1] = myJson.results[0].geometry.lng;
-                    console.log("arrayKoor gesetzt");
+                    arrayKoor1[0] = myJson.results[0].geometry.lat;
+                    arrayKoor1[1] = myJson.results[0].geometry.lng;
+                    console.log("Fertig Gefetcht1 : ");
+                });
 
-                    if(arrayKoor[0] != null && arrayKoor[1] != null){
-                        resolve(arrayKoor);
+
+            var url2 = "https://api.opencagedata.com/geocode/v1/json?" +
+                "q=" + geo2 +
+                "&key=01a447136c764adc91012c7e9d348dbf";
+
+            fetch(url2)
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (myJson) {
+                    arrayKoor2[0] = myJson.results[0].geometry.lat;
+                    arrayKoor2[1] = myJson.results[0].geometry.lng;
+                    console.log("Fertig Gefetcht2 : ");
+
+                    if(arrayKoor1[1] != null && arrayKoor2[1] != null){
+                        var tmpArray = [arrayKoor1,arrayKoor2];
+                        resolve(tmpArray);
                     }
                     else {
                         reject("No data");
                     }
+
                 });
+
+
+
 
         });
 

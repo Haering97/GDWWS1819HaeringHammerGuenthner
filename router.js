@@ -1,8 +1,7 @@
-
-// Init
 var express = require('express');
 var router = express.Router();
 var fetcher = require('./fetcher');
+var poi = require('./poi');
 
 // Routing
 
@@ -48,9 +47,18 @@ router.get('/:start/:ziel/:startT',function(req,res,next){
     tmp.catch(function (error) {
         res.send(error)
     })
-
-
 });
+
+
+
+
+router.post('/poi/:lat/:lon/:kat',function (req,res,next) {
+
+
+    var poi2 = poi.createNewPoi(1,req.params.lat,req.params.lon,req.params.kat);
+    res.send(poi2);
+});
+
 
 
 

@@ -66,12 +66,13 @@ class Fetcher{
 
                  var latlong1 = array[0];
                  var latlong2 = array[1];
-                 var promise3 =  Fetcher.getWeather(latlong1,latlong2);
+                 //var promise3 =  Fetcher.getWeather(latlong1,latlong2);
 
 
                  var urlRoute = "https://api.openrouteservice.org/directions?api_key=5b3ce3597851110001cf62489e05bd56cff244a7b5072edc85037ec5&coordinates=" + latlong1[1] +"," + latlong1[0] + "%7C"+ latlong2[1] + ","+latlong2[0] + "&profile=foot-hiking&preference=recommended&format=geojson&units=m&language=de&extra_info=surface&geometry_simplify=true&instructions=true&instructions_format=html&elevation=true" ;
                  console.log(urlRoute);
                  var promise2 = Fetcher.coordinates(urlRoute);
+
 
                  promise2.then(function (data) {
                      var coordinates = data.features[0].geometry;
@@ -90,10 +91,10 @@ class Fetcher{
                      console.log(err);
                  });
 
-                 promise3.then(function (key1) {
+                 /*promise3.then(function (key1) {
                      console.log("key1");
                      console.log(key1);
-                 })
+                 })*/
 
 
              });

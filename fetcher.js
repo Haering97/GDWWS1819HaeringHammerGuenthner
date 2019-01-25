@@ -76,14 +76,11 @@ class Fetcher{
 
                  promise2.then(function (data) {
                      var coordinates = data.features[0].geometry;
-                     var summary = data.features[0].properties.summary;
-                     var coordinates = data.features[0].geometry;
-                     console.log("coordinates");
-                     console.log(coordinates);
-                     console.log("summary");
-                     console.log(summary);
+                     var summary = data.features[0].properties.summary[0];
+                     var coordinatesType = data.features[0].geometry.type;
+                     var timestamp = data.info.timestamp;
 
-                     if(summary)resolve(coordinates);
+                     if(summary)resolve(summary);
                      else reject(err);
                  });
 
@@ -125,13 +122,16 @@ class Fetcher{
                 .then(function (myJson) {
                     arrayKoor1[0] = myJson.results[0].geometry.lat;
                     arrayKoor1[1] = myJson.results[0].geometry.lng;
-                    console.log("Fertig Gefetcht1 : ");
+                    arrayKoor1[2] = myJson.results[0].components.postcode;
+                    arrayKoor1[3] = myJson.results[0].confidence;
                 });
 
 
             var url2 = "https://api.opencagedata.com/geocode/v1/json?" +
                 "q=" + geo2 +
                 "&key=01a447136c764adc91012c7e9d348dbf";
+            console.log(url2);
+
 
             fetch(url2)
                 .then(function (response) {
@@ -140,7 +140,8 @@ class Fetcher{
                 .then(function (myJson) {
                     arrayKoor2[0] = myJson.results[0].geometry.lat;
                     arrayKoor2[1] = myJson.results[0].geometry.lng;
-                    console.log("Fertig Gefetcht2 : ");
+                    arrayKoor2[2] = myJson.results[0].components.postcode;
+                    arrayKoor2[3] = myJson.results[0].confidence;
 
                     if(arrayKoor1[1] != null && arrayKoor2[1] != null){
                         var tmpArray = [arrayKoor1,arrayKoor2];

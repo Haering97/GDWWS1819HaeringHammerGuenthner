@@ -22,33 +22,60 @@ class Fetcher{
         });
         return promise;
     }
+
+
     static getWeather(latlong1,latlong2){
+
          return new Promise(function (resolve, reject) {
 
-                var url1 = "http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=h4SEQjr8kojz6kIL0EBXqO4wXbVZNnl7&q="+ latlong1[0] +"%2C"+ latlong1[1];
-                fetch(url1)
-                    .then(function (response) {
-                        return response.json();
-                    })
-                    .then(function (myJson) {
-                        console.log("keyShit");
-                        console.log(myJson);
-                        var key1 = myJson.Key;
-                    });
+             var promise = Fetcher.getGeoKey(latlong1,latlong2);
 
-                     var url2 = "http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=h4SEQjr8kojz6kIL0EBXqO4wXbVZNnl7&q="+ latlong2[0] +"%2C"+ latlong2[1];
-                     fetch(url2)
-                         .then(function (response) {
-                             response.json();
-                         })
-                         .then(function (myJson) {
-                             var key2 = myJson.Key;
-                         });
+             promise.then(function (data) {
+                 console.log("DATA");
+                 console.log(data);
+                 resolve(data);
+             });
 
-                     if(key1 && key2)resolve(key1);
-                     else reject(err);
-
+             promise.catch(function (error) {
+                 console.log(error);
+                 reject(error);
+             });
          });
+
+
+
+
+    }
+
+    static getGeoKey(latlong1,latlong2){
+
+        return new Promise(function (resolve, reject) {
+
+            var key1;
+            var key2;
+            var url1 = "http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=h4SEQjr8kojz6kIL0EBXqO4wXbVZNnl7&q="+ latlong1[0] +"%2C"+ latlong1[1];
+            console.log(url1);
+            fetch(url1)
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (myJson) {
+                     key1 = myJson.Key;
+                });
+
+            var url2 = "http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=h4SEQjr8kojz6kIL0EBXqO4wXbVZNnl7&q="+ latlong2[0] +"%2C"+ latlong2[1];
+            fetch(url2)
+                .then(function (response) {
+                    response.json();
+                })
+                .then(function (myJson) {
+                     key2 = myJson.Key;
+                });
+
+            if(key1 && key2)resolve(key1);
+            else reject("Error");
+
+        });
     }
 
 
@@ -66,7 +93,7 @@ class Fetcher{
 
                  var latlong1 = array[0];
                  var latlong2 = array[1];
-                 //var promise3 =  Fetcher.getWeather(latlong1,latlong2);
+                 var promise3 =  Fetcher.getWeather(latlong1,latlong2);
 
 
                  var urlRoute = "https://api.openrouteservice.org/directions?api_key=5b3ce3597851110001cf62489e05bd56cff244a7b5072edc85037ec5&coordinates=" + latlong1[1] +"," + latlong1[0] + "%7C"+ latlong2[1] + ","+latlong2[0] + "&profile=foot-hiking&preference=recommended&format=geojson&units=m&language=de&extra_info=surface&geometry_simplify=true&instructions=true&instructions_format=html&elevation=true" ;
@@ -88,10 +115,10 @@ class Fetcher{
                      console.log(err);
                  });
 
-                 /*promise3.then(function (key1) {
+                 promise3.then(function (key1) {
                      console.log("key1");
                      console.log(key1);
-                 })*/
+                 })
 
 
              });
@@ -105,10 +132,10 @@ class Fetcher{
     /*  */
     static getVerarbeiteteDaten (geo1,geo2) {
 
+        var arrayKoor1 = [];
+        var arrayKoor2 = [];
 
-        var promise = new Promise(function (resolve,reject) {
-            var arrayKoor1 = [];
-            var arrayKoor2 = [];
+        var promise1 = new Promise(function (resolve,reject) {
 
 
             var url = "https://api.opencagedata.com/geocode/v1/json?" +
@@ -124,8 +151,12 @@ class Fetcher{
                     arrayKoor1[1] = myJson.results[0].geometry.lng;
                     arrayKoor1[2] = myJson.results[0].components.postcode;
                     arrayKoor1[3] = myJson.results[0].confidence;
+                    if(arrayKoor1)this.resolve(arrayKoor1);
+                    else reject("Error");
                 });
+        });
 
+        var promise2 = new Promise(function (resolve, reject) {
 
             var url2 = "https://api.opencagedata.com/geocode/v1/json?" +
                 "q=" + geo2 +
@@ -142,23 +173,17 @@ class Fetcher{
                     arrayKoor2[1] = myJson.results[0].geometry.lng;
                     arrayKoor2[2] = myJson.results[0].components.postcode;
                     arrayKoor2[3] = myJson.results[0].confidence;
+                    if(arrayKoor2)this.resolve(arrayKoor2);
+                    else reject("Error");
+                });
+                 });
 
-                    if(arrayKoor1[1] != null && arrayKoor2[1] != null){
-                        var tmpArray = [arrayKoor1,arrayKoor2];
-                        resolve(tmpArray);
-                    }
-                    else {
-                        reject("No data");
-                    }
-
+                Promise.all(promise1,promise2).then(function (data) {
+                    console.log(data);
+                    resolve(data);
                 });
 
 
-
-
-        });
-
-        return promise;
 
     }
 }

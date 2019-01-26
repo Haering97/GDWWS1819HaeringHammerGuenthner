@@ -93,7 +93,7 @@ class Fetcher{
 
                  var latlong1 = array[0];
                  var latlong2 = array[1];
-                 var promise3 =  Fetcher.getWeather(latlong1,latlong2);
+                // var promise3 =  Fetcher.getWeather(latlong1,latlong2);
 
 
                  var urlRoute = "https://api.openrouteservice.org/directions?api_key=5b3ce3597851110001cf62489e05bd56cff244a7b5072edc85037ec5&coordinates=" + latlong1[1] +"," + latlong1[0] + "%7C"+ latlong2[1] + ","+latlong2[0] + "&profile=foot-hiking&preference=recommended&format=geojson&units=m&language=de&extra_info=surface&geometry_simplify=true&instructions=true&instructions_format=html&elevation=true" ;
@@ -115,10 +115,10 @@ class Fetcher{
                      console.log(err);
                  });
 
-                 promise3.then(function (key1) {
+                /* promise3.then(function (key1) {
                      console.log("key1");
                      console.log(key1);
-                 })
+                 })*/
 
 
              });
@@ -134,6 +134,10 @@ class Fetcher{
 
         var arrayKoor1 = [];
         var arrayKoor2 = [];
+
+        var promiseErgebnis = new Promise(function (resolve, reject) {
+
+
 
         var promise1 = new Promise(function (resolve,reject) {
 
@@ -151,7 +155,7 @@ class Fetcher{
                     arrayKoor1[1] = myJson.results[0].geometry.lng;
                     arrayKoor1[2] = myJson.results[0].components.postcode;
                     arrayKoor1[3] = myJson.results[0].confidence;
-                    if(arrayKoor1)this.resolve(arrayKoor1);
+                    if(arrayKoor1) resolve(arrayKoor1);
                     else reject("Error");
                 });
         });
@@ -173,18 +177,19 @@ class Fetcher{
                     arrayKoor2[1] = myJson.results[0].geometry.lng;
                     arrayKoor2[2] = myJson.results[0].components.postcode;
                     arrayKoor2[3] = myJson.results[0].confidence;
-                    if(arrayKoor2)this.resolve(arrayKoor2);
+                    if(arrayKoor2) resolve(arrayKoor2);
                     else reject("Error");
                 });
                  });
 
-                Promise.all(promise1,promise2).then(function (data) {
-                    console.log(data);
-                    resolve(data);
-                });
 
+            Promise.all([promise1,promise2]).then(function (data) {
+                console.log("Promise All Fullfilled");
+                resolve(data);
+            });
 
-
+        });
+        return promiseErgebnis;
     }
 }
 

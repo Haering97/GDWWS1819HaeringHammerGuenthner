@@ -63,7 +63,6 @@ class Fetcher{
              promise1.then(function (array) {
                  console.log(array[0]);
                  console.log(array[1]);
-
                  var latlong1 = array[0];
                  var latlong2 = array[1];
                  //var promise3 =  Fetcher.getWeather(latlong1,latlong2);

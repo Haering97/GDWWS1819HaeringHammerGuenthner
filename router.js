@@ -52,25 +52,111 @@ router.get('/:start/:ziel/:startT',function(req,res,next){
 
 
 
-
+var lauf = 0;
+var poisArray = ["Pois"];
 router.post('/poi/:lat/:lon/:kat',function (req,res,next) {
 
+    var poi2 = poi.createNewPoi(lauf++,req.params.lat,req.params.lon,req.params.kat);
+    poisArray[lauf] = poi2;
 
-    var poi2 = poi.createNewPoi(1,req.params.lat,req.params.lon,req.params.kat);
-    fs.writeFile("pois"+poi2.id+".json", JSON.stringify(poi2),function () {
+    fs.writeFile("./pois/pois.json", JSON.stringify(poisArray),function () {
         console.log("File Written");
     });
 
-    fs.readFile('./pois1.json', function (err, data) {
-        if (err) throw err;
-        else
-        {
-            var test = JSON.parse(data);
-            console.log("test");
-            console.log(test);
-        }
-    });
     res.send(poi2);
+});
+
+
+router.delete('/poi/:lat/:lon/',function (req,res,next) {
+
+    var lat = req.params.lat;
+    var lon = req.params.lon;
+    var removed;
+
+    fs.readFile('./pois/pois.json', function (err,file) {
+        if(err) {
+            res.send("Error Deleting POI");
+            throw err;
+        }
+
+        var data = JSON.parse(file);
+        data.forEach(function (element,index) {
+            if(element.lat != null && element.lon != null ){
+
+                if(lat === element.lat && lon === element.lon){ // Beides MÜSSEN Zahlen sein ( === )
+                        removed = data.splice(index,1);
+                }
+            }
+        });
+
+        fs.writeFile("./pois/pois.json", JSON.stringify(data),function () {
+            if(removed != null){
+
+                res.send(removed);
+            }
+            else res.send("No Poi found");
+        });
+
+    });
+
+});
+
+
+router.put('/poi/:lat/:lon/:kat',function (req,res,next) {
+
+    var lat = req.params.lat;
+    var lon = req.params.lon;
+    var katNeu = req.params.kat;
+
+    fs.readFile('./pois/pois.json', function (err,file) {
+        if(err) {
+            res.send("Error Updating POI");
+            throw err;
+        }
+
+        var data = JSON.parse(file);
+        data.forEach(function (element) {
+            if(element.lat != null && element.lon != null ){
+
+                if(lat === element.lat && lon === element.lon){ // Beides MÜSSEN Zahlen sein ( === )
+                    element.kategorie = katNeu;
+                    res.send(element);
+                }
+            }
+        });
+
+        fs.writeFile("./pois/pois.json", JSON.stringify(data),function () {
+
+
+        });
+
+    });
+
+});
+
+
+router.get('/poi/:lat/:lon',function (req,res,next) {
+
+    var lat = req.params.lat;
+    var lon = req.params.lon;
+
+    fs.readFile('./pois/pois.json', function (err,file) {
+        if(err) {
+            res.send("Error Updating POI");
+            throw err;
+        }
+
+        var data = JSON.parse(file);
+        data.forEach(function (element) {
+            if(element.lat != null && element.lon != null ){
+
+                if(lat === element.lat && lon === element.lon){ // Beides MÜSSEN Zahlen sein ( === )
+                    res.send(element);
+                }
+            }
+        });
+    });
+
 });
 
 

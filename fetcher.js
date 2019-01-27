@@ -86,7 +86,10 @@ class Fetcher{
 
                      console.log(highest);
 
-                     if(summary)resolve(summary);
+                     var result = [];
+                     result.push(coordinates,summary,coordinatesType,timestamp,highest);
+
+                     if(summary)resolve(result);
                      else reject(err);
                  });
 

@@ -52,24 +52,14 @@ router.get('/:start/:ziel/:startT',function(req,res,next){
 
 
 
-
+var lauf = 0;
 router.post('/poi/:lat/:lon/:kat',function (req,res,next) {
 
-
-    var poi2 = poi.createNewPoi(1,req.params.lat,req.params.lon,req.params.kat);
+    var poi2 = poi.createNewPoi(lauf++,req.params.lat,req.params.lon,req.params.kat);
     fs.writeFile("pois"+poi2.id+".json", JSON.stringify(poi2),function () {
         console.log("File Written");
     });
 
-    fs.readFile('./pois1.json', function (err, data) {
-        if (err) throw err;
-        else
-        {
-            var test = JSON.parse(data);
-            console.log("test");
-            console.log(test);
-        }
-    });
     res.send(poi2);
 });
 

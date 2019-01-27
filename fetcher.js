@@ -1,3 +1,4 @@
+var poi = require('./poi');
 class Fetcher{
 
     // Liefert die Route zwischen 2 ( in der URL definiert ) Punkten wieder
@@ -75,6 +76,7 @@ class Fetcher{
                      var summary = data.features[0].properties.summary[0]; // Zusammenfassung , Dauer , Entfernung , m bergab/bergauf
                      var coordinatesType = data.features[0].geometry.type; // Typ der Koordinaten
                      var timestamp = data.info.timestamp; // Zeitstempel
+                     //var pois = poi.getPOIsNähe(coordinates);
 
 
                      // Höchster Punkt auf der Route
@@ -85,16 +87,17 @@ class Fetcher{
 
                      console.log(highest);
 
-
-                     coordinates.forEach(function (element,index) {
-
-                     });
-
                      var result = [];
+
+
                      result.push(coordinates,summary,coordinatesType,timestamp,highest);
 
-                     if(summary)resolve(result);
-                     else reject(err);
+                     // pois.then(function (data) {
+                     //        result.push(data);
+                     // });
+
+                     if(summary != null && coordinates != null)resolve(result);
+                     else reject("err In GetInfo");
                  });
 
                     // Falls keine Route gefunden wird ( oder generell Error )

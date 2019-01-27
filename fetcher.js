@@ -19,6 +19,7 @@ class Fetcher{
     }
 
     // Noch nicht ordentlich implementiert
+
    /* static getWeather(latlong1,latlong2){
          return new Promise(function (resolve, reject) {
 
@@ -47,8 +48,6 @@ class Fetcher{
 
          });
     }*/
-
-
 
    // Liefert alle Infos zu einer Route/Weg an den Router zurück
     static getInfo(geo1,geo2) {
@@ -86,6 +85,11 @@ class Fetcher{
 
                      console.log(highest);
 
+
+                     coordinates.forEach(function (element,index) {
+
+                     });
+
                      var result = [];
                      result.push(coordinates,summary,coordinatesType,timestamp,highest);
 
@@ -97,8 +101,6 @@ class Fetcher{
                  promise2.catch(function (err) {
                      console.log(err);
                  });
-
-
              });
          });
      }
@@ -174,53 +176,6 @@ class Fetcher{
 }
 
 module.exports = Fetcher;
-
-/*
-static datenVerarbeiten(datenArray){
-    /!* datenArray[X]
-    * 0 = Lat
-    * 1 = Long
-    * 2 = Country
-    * 3 = City
-    * 4 = Confidence
-    * BERECHNET :
-    *      Average of : Lat , Long , Confidence*!/
-
-
-    /!* Durchschnittliche Genauigkeit Anfang *!/
-    var confidenceAvg = 0;
-
-    for(let i = 0 ; i< datenArray[4].length ; i++){
-        confidenceAvg += datenArray[4][i];
-    }
-
-    confidenceAvg = confidenceAvg / datenArray[4].length;
-    console.log("Con AVg : "+confidenceAvg);
-    /!* Durchschnittliche Genauigkeit Ende *!/
-
-
-    /!* Durchschnittliche Latitude Anfang *!/
-    var LatAvg = 0;
-
-    for(let i = 0 ; i< datenArray[0].length ; i++){
-        LatAvg += datenArray[0][i];
-    }
-
-    LatAvg = LatAvg / datenArray[0].length;
-    console.log("Lat AVg : "+LatAvg);
-    /!* Durchschnittliche Latitude Ende *!/
-
-
-    /!* Durchschnittliche Longitude Anfang *!/
-    var LongAvg = 0;
-
-    for(let i = 0 ; i< datenArray[1].length ; i++){
-        LongAvg += datenArray[1][i];
-    }
-
-    LongAvg = LongAvg / datenArray[1].length;
-    console.log("Long AVg : "+ LongAvg);
-/!* Durchschnittliche Longitude Ende *!/*/
 
 
 

@@ -102,6 +102,39 @@ router.delete('/poi/:lat/:lon/',function (req,res,next) {
 });
 
 
+router.put('/poi/:lat/:lon/:kat',function (req,res,next) {
+
+    var lat = req.params.lat;
+    var lon = req.params.lon;
+    var katNeu = req.params.kat;
+
+    fs.readFile('./pois/pois.json', function (err,file) {
+        if(err) {
+            res.send("Error Updating POI");
+            throw err;
+        }
+
+        var data = JSON.parse(file);
+        data.forEach(function (element) {
+            if(element.lat != null && element.lon != null ){
+
+                if(lat === element.lat && lon === element.lon){ // Beides MÜSSEN Zahlen sein ( === )
+                    element.kategorie = katNeu;
+                    res.send(element);
+                }
+            }
+        });
+
+        fs.writeFile("./pois/pois.json", JSON.stringify(data),function () {
+
+
+        });
+
+    });
+
+});
+
+
 
 
 module.exports = router;

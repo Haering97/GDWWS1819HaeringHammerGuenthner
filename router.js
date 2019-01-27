@@ -1,8 +1,8 @@
 var express = require('express');
-var router = express.Router();
-var fetcher = require('./fetcher');
-var fs = require('fs');
-var poi = require('./poi');
+var router = express.Router(); // Express Router
+var fetcher = require('./fetcher'); // Eigenes "Modul"
+var fs = require('fs'); // NodeJs FileSystem Modul
+var poi = require('./poi'); // Eigenes "Modul"
 
 // Routing
 
@@ -20,7 +20,7 @@ router.get('/:start',function (req,res,next) {
 
 
 
-
+// Liefert Route + Infos zurück
 router.get('/:start/:ziel',function (req,res,next) {
     var start = req.params.start;
     var ziel= req.params.ziel;
@@ -34,7 +34,8 @@ router.get('/:start/:ziel',function (req,res,next) {
     })
 });
 
-router.get('/:start/:ziel/:startT',function(req,res,next){
+
+/*router.get('/:start/:ziel/:startT',function(req,res,next){
     var start = req.params.start;
     var ziel= req.params.ziel;
     var starT = req.params.startT;
@@ -48,17 +49,22 @@ router.get('/:start/:ziel/:startT',function(req,res,next){
     tmp.catch(function (error) {
         res.send(error)
     })
-});
+});*/
 
 
 
-var lauf = 0;
-var poisArray = ["Pois"];
+var lauf = 0; // um Pois nacheinander einzufügen
+var poisArray = ["Pois"]; // Array in dem die Pois gespeichert werden
+
+
+// Hinzufügen von POIS
 router.post('/poi/:lat/:lon/:kat',function (req,res,next) {
 
+    // Erstellt neuen POI
     var poi2 = poi.createNewPoi(lauf++,req.params.lat,req.params.lon,req.params.kat);
     poisArray[lauf] = poi2;
 
+    // Speichert neuen POI lokal ab
     fs.writeFile("./pois/pois.json", JSON.stringify(poisArray),function () {
         console.log("File Written");
     });
@@ -67,18 +73,21 @@ router.post('/poi/:lat/:lon/:kat',function (req,res,next) {
 });
 
 
+// Löscht bestimmten POI
 router.delete('/poi/:lat/:lon/',function (req,res,next) {
 
     var lat = req.params.lat;
     var lon = req.params.lon;
     var removed;
 
+    // Liest bereits vorhandene POIS ein
     fs.readFile('./pois/pois.json', function (err,file) {
         if(err) {
             res.send("Error Deleting POI");
             throw err;
         }
 
+        // Sucht passenden POI
         var data = JSON.parse(file);
         data.forEach(function (element,index) {
             if(element.lat != null && element.lon != null ){
@@ -89,6 +98,7 @@ router.delete('/poi/:lat/:lon/',function (req,res,next) {
             }
         });
 
+        // Speichert veränderten Array wieder ab
         fs.writeFile("./pois/pois.json", JSON.stringify(data),function () {
             if(removed != null){
 
@@ -102,56 +112,58 @@ router.delete('/poi/:lat/:lon/',function (req,res,next) {
 });
 
 
+// Aktualisiert die Kategorie eines bestimmten POIS
 router.put('/poi/:lat/:lon/:kat',function (req,res,next) {
 
     var lat = req.params.lat;
     var lon = req.params.lon;
     var katNeu = req.params.kat;
 
+    // Liest vorhandene POIs ein
     fs.readFile('./pois/pois.json', function (err,file) {
         if(err) {
             res.send("Error Updating POI");
             throw err;
         }
 
+        // Sucht passenden POI
         var data = JSON.parse(file);
         data.forEach(function (element) {
             if(element.lat != null && element.lon != null ){
 
                 if(lat === element.lat && lon === element.lon){ // Beides MÜSSEN Zahlen sein ( === )
-                    element.kategorie = katNeu;
+                    element.kategorie = katNeu; // Aktualisiert POI mit neuer Kategorie
                     res.send(element);
                 }
             }
         });
-
+            // Speichert Änderung ab
         fs.writeFile("./pois/pois.json", JSON.stringify(data),function () {
-
-
+                console.log("Aktualisiert ! ")
         });
-
     });
-
 });
 
-
+// Ruft bestimmten POI ab
 router.get('/poi/:lat/:lon',function (req,res,next) {
 
     var lat = req.params.lat;
     var lon = req.params.lon;
 
+    // Liest vorhandene POIs ein
     fs.readFile('./pois/pois.json', function (err,file) {
         if(err) {
             res.send("Error Updating POI");
             throw err;
         }
 
+        // Sucht passenden POI
         var data = JSON.parse(file);
         data.forEach(function (element) {
             if(element.lat != null && element.lon != null ){
 
                 if(lat === element.lat && lon === element.lon){ // Beides MÜSSEN Zahlen sein ( === )
-                    res.send(element);
+                    res.send(element); // Gibt passenden POI zurück
                 }
             }
         });

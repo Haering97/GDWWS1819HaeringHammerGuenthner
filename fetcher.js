@@ -76,6 +76,7 @@ class Fetcher{
                      var summary = data.features[0].properties.summary[0]; // Zusammenfassung , Dauer , Entfernung , m bergab/bergauf
                      var coordinatesType = data.features[0].geometry.type; // Typ der Koordinaten
                      var timestamp = data.info.timestamp; // Zeitstempel
+                     var instructions = data.features[0].properties.segments[0].steps;
                      //var pois = poi.getPOIsNähe(coordinates);
 
 
@@ -85,18 +86,26 @@ class Fetcher{
                          if(element[2]>highest[2])highest = element;
                      });
 
+                     var instructionsArray = [];
+
+                     instructions.forEach(function (element) {
+                        instructionsArray.push(element.instruction);
+                     });
+
                      console.log(highest);
+                     console.log(instructionsArray);
+
 
                      var result = [];
 
 
-                     result.push(coordinates,summary,coordinatesType,timestamp,highest);
+                     result.push(coordinates,summary,coordinatesType,timestamp,highest,instructionsArray);
 
                      // pois.then(function (data) {
                      //        result.push(data);
                      // });
 
-                     if(summary != null && coordinates != null)resolve(result);
+                     if(summary != null && coordinates != null && instructionsArray != null)resolve(result);
                      else reject("err In GetInfo");
                  });
 

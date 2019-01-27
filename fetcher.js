@@ -92,20 +92,18 @@ class Fetcher{
                         instructionsArray.push(element.instruction);
                      });
 
-                     console.log(highest);
-                     console.log(instructionsArray);
-
+                     var luftlinie = poi.measure(latlong1[0],latlong1[1],latlong2[0],latlong2[1])/1000;
 
                      var result = [];
 
 
-                     result.push(coordinates,summary,coordinatesType,timestamp,highest,instructionsArray);
+                     result.push(coordinates,summary,luftlinie,timestamp,highest,instructionsArray);
 
                      // pois.then(function (data) {
                      //        result.push(data);
                      // });
 
-                     if(summary != null && coordinates != null && instructionsArray != null)resolve(result);
+                     if(summary != null && coordinates != null && instructionsArray != null && luftlinie != null)resolve(result);
                      else reject("err In GetInfo");
                  });
 

@@ -135,6 +135,31 @@ router.put('/poi/:lat/:lon/:kat',function (req,res,next) {
 });
 
 
+router.get('/poi/:lat/:lon',function (req,res,next) {
+
+    var lat = req.params.lat;
+    var lon = req.params.lon;
+
+    fs.readFile('./pois/pois.json', function (err,file) {
+        if(err) {
+            res.send("Error Updating POI");
+            throw err;
+        }
+
+        var data = JSON.parse(file);
+        data.forEach(function (element) {
+            if(element.lat != null && element.lon != null ){
+
+                if(lat === element.lat && lon === element.lon){ // Beides MÜSSEN Zahlen sein ( === )
+                    res.send(element);
+                }
+            }
+        });
+    });
+
+});
+
+
 
 
 module.exports = router;

@@ -8,8 +8,6 @@ class Poi{
         poi.lat = lat;
         poi.lon = lon;
         poi.kategorie = kategorie;
-        console.log("AddNewPoi");
-        console.log(poi);
         return poi;
     }
 

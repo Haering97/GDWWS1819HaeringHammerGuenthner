@@ -44,7 +44,6 @@ class Poi{
                         coordinates.forEach(function (element) {
                             if(Poi.measure(element[1],element[0],pois[i].lat,pois[i].lon) < 500){
                                 if(!result.includes(pois[i]))result.push(pois[i]);
-                                console.log("POI gefunden");
                             }
                         });
                     }

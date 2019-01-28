@@ -7,22 +7,118 @@ var poi = require('./poi'); // Eigenes "Modul"
 // Routing
 
 // Liefert Route + Infos zurück
-router.get('/route/:id',function (req,res,next) {
+
+router.post('/route/:id',function (req,res,next) {
     var start = req.query.start;
-    var ziel= req.query.ziel;
-    var id= req.params.id;
+    var ziel = req.query.ziel;
+    var id = req.params.id;
 
-    var tmp = fetcher.getInfo(id);
-    tmp.then(function (data) {
-        res.status(200).send(data);
-    });
+    fs.readFile('./routes/routes.json' ,function (err,file) {
+        if(err)res.status(404).send("Error File Not Found");
+        else {
+            var data = JSON.parse(file);
 
-    tmp.catch(function (error) {
-        res.status(500).send(error)
+            if(start !=null && ziel != null && id != null){
+                if(data[id] != null){
+                    res.send("Eine Route mit der ID existiert bereits");
+                }
+                else {
+                var tmp = {};
+                tmp.start = start;
+                tmp.ziel = ziel;
+                data[id] = tmp;
+
+                fs.writeFile('./routes/routes.json', JSON.stringify(data));
+
+                res.status(200).send(tmp);
+
+                }}
+        }
     })
+
+});
+
+router.put('/route/:id',function (req,res,next) {
+
+    var start = req.query.start;
+    var ziel = req.query.ziel;
+    var id = req.params.id;
+
+        fs.readFile('./routes/routes.json',function (err,file) {
+            if(err)res.status(404).send("File Not Found");
+            else {
+
+                var data = JSON.parse(file);
+
+                if(data[id] != null ){
+                        var tmp = data[id];
+                        if(start != null) tmp.start = start;
+                        if(ziel != null) tmp.ziel = ziel;
+                        data [id] = tmp;
+                        fs.writeFile('./routes/routes.json', JSON.stringify(data), function () {
+                            res.status(200).send("Route aktualisiert")
+                        });
+                }
+                else{
+                    res.status(404).send("Keine Route mit dieser ID gefunden");
+                }
+            }
+        })
+
 });
 
 
+router.delete('/route/:id',function (req,res,next) {
+
+    const id = req.params.id;
+
+    fs.readFile('./routes/routes.json',function (err,file) {
+       if(err)res.status(404).send("File nicht gefunden");
+       else {
+           var data = JSON.parse(file);
+           if(data[id] != null){
+               var tmp = data[id];
+               data[id] = null;
+               fs.writeFile('./routes/routes.json', JSON.stringify(data),function () {
+                   res.status(200).send("Route gelöscht" + tmp);
+               });
+           }
+           else{
+               res.status(404).send("Keine Route mit dieser ID gefunden");
+           }
+       }
+    });
+
+});
+
+router.get('/route/:id',function (req,res,next) {
+
+    var id= req.params.id;
+
+    fs.readFile('./routes/routes.json',function (err,file) {
+        if(err)res.status(404).send("File Not Found");
+        else {
+            var data = JSON.parse(file);
+            if (data[id] != null) {
+
+                var tmp = fetcher.getInfo(data[id].start,data[id].ziel);
+                tmp.then(function (data) {
+                    res.status(200).send(data);
+                });
+
+                tmp.catch(function (error) {
+                    res.status(500).send(error)
+                })
+            }
+            else {
+                res.status(404).send("Keine Route mit dieser ID gefunden");
+            }
+
+
+        }});
+
+
+});
 
 
 

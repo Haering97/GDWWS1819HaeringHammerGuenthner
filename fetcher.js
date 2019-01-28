@@ -53,12 +53,10 @@ class Fetcher{
     }*/
 
 
-   static getInfo(id){
 
-   }
 
    // Liefert alle Infos zu einer Route/Weg an den Router zurück
-    static getRoute(geo1,geo2) {
+    static getInfo(geo1,geo2) {
 
         return new Promise(function (resolve, reject) {
 

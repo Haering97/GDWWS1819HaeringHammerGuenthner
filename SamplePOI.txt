@@ -1,0 +1,5 @@
+poi/50.935656/7.734710/Steinbruch
+poi/50.931006/7.716123/Kurpark
+poi/50.931006/7.716123/Windmühle
+poi/50.936434/7.723448/Aussicht
+poi/50.939438/7.748764/Imbiss

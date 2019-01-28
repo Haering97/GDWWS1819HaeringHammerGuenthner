@@ -177,12 +177,7 @@ class Fetcher{
                     else {
                         reject("No data");
                     }
-
                 });
-
-
-
-
         });
 
         return promise;

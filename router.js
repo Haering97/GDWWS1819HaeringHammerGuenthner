@@ -128,12 +128,13 @@ router.put('/poi/:lat/:lon/:kat',function (req,res,next) {
 
         // Sucht passenden POI
         var data = JSON.parse(file);
+        var neu;
         data.forEach(function (element) {
             if(element.lat != null && element.lon != null ){
 
                 if(lat === element.lat && lon === element.lon){ // Beides MÜSSEN Zahlen sein ( === )
                     element.kategorie = katNeu; // Aktualisiert POI mit neuer Kategorie
-                    res.send(element);
+                    neu = element;
                 }
             }
         });
@@ -141,6 +142,7 @@ router.put('/poi/:lat/:lon/:kat',function (req,res,next) {
         fs.writeFile("./pois/pois.json", JSON.stringify(data),function () {
                 console.log("Aktualisiert ! ")
         });
+        res.send(neu);
     });
 });
 

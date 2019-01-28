@@ -1,5 +1,7 @@
 var poi = require('./poi');
+var fs = require('fs');
 class Fetcher{
+
 
     // Liefert die Route zwischen 2 ( in der URL definiert ) Punkten wieder
     static coordinates (url) {
@@ -50,8 +52,13 @@ class Fetcher{
          });
     }*/
 
+
+   static getInfo(id){
+
+   }
+
    // Liefert alle Infos zu einer Route/Weg an den Router zurück
-    static getInfo(geo1,geo2) {
+    static getRoute(geo1,geo2) {
 
         return new Promise(function (resolve, reject) {
 

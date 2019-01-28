@@ -112,6 +112,10 @@ class Fetcher{
                      console.log(err);
                  });
              });
+
+             promise1.catch(function (err) {
+                 console.log("Konnte nicht beide Orte in lat/long umwandeln");
+             })
          });
      }
 
@@ -167,6 +171,7 @@ class Fetcher{
                      // Falls für beide ein Ergebnis gefunden wurde ->
                     if(arrayKoor1[1] != null && arrayKoor2[1] != null){
                         var tmpArray = [arrayKoor1,arrayKoor2];
+                        console.log(tmpArray);
                         resolve(tmpArray); // Promise wird mit gefundenen Daten ausgelöst
                     }
                     else {

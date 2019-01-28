@@ -6,31 +6,17 @@ var poi = require('./poi'); // Eigenes "Modul"
 
 // Routing
 
-
-router.get('/',function (req,res,next) {
-    res.send("Root");
-    fetcher.getVerarbeiteteDaten("London");
-   // fetcher.coorToGeo("51.509865","-0.118092")
-});
-
-router.get('/:start',function (req,res,next) {
-    var geo = req.params.start;
-    res.send(geo);
-});
-
-
-
 // Liefert Route + Infos zurück
 router.get('/:start/:ziel',function (req,res,next) {
     var start = req.params.start;
     var ziel= req.params.ziel;
     var tmp = fetcher.getInfo(start,ziel);
-    tmp.then(function (summary) {
-       res.send(summary);
+    tmp.then(function (data) {
+        res.status(200).send(data);
     });
 
     tmp.catch(function (error) {
-        res.send(error)
+        res.status(500).send(error)
     })
 });
 
@@ -69,7 +55,7 @@ router.post('/poi/:lat/:lon/:kat',function (req,res,next) {
         console.log("File Written");
     });
 
-    res.send(poi2);
+    res.status(201).send(poi2);
 });
 
 
@@ -83,7 +69,7 @@ router.delete('/poi/:lat/:lon/',function (req,res,next) {
     // Liest bereits vorhandene POIS ein
     fs.readFile('./pois/pois.json', function (err,file) {
         if(err) {
-            res.send("Error Deleting POI");
+            res.status(500).send("Error Deleting POI");
             throw err;
         }
 
@@ -93,7 +79,7 @@ router.delete('/poi/:lat/:lon/',function (req,res,next) {
             if(element.lat != null && element.lon != null ){
 
                 if(lat === element.lat && lon === element.lon){ // Beides MÜSSEN Zahlen sein ( === )
-                        removed = data.splice(index,1);
+                    removed = data.splice(index,1);
                 }
             }
         });
@@ -102,9 +88,9 @@ router.delete('/poi/:lat/:lon/',function (req,res,next) {
         fs.writeFile("./pois/pois.json", JSON.stringify(data),function () {
             if(removed != null){
 
-                res.send(removed);
+                res.status(200).send(removed);
             }
-            else res.send("No Poi found");
+            else res.status(500).send("No Poi found");
         });
 
     });
@@ -122,7 +108,7 @@ router.put('/poi/:lat/:lon/:kat',function (req,res,next) {
     // Liest vorhandene POIs ein
     fs.readFile('./pois/pois.json', function (err,file) {
         if(err) {
-            res.send("Error Updating POI");
+            res.status(404).send("Error Updating POI");
             throw err;
         }
 
@@ -138,9 +124,9 @@ router.put('/poi/:lat/:lon/:kat',function (req,res,next) {
                 }
             }
         });
-            // Speichert Änderung ab
+        // Speichert Änderung ab
         fs.writeFile("./pois/pois.json", JSON.stringify(data),function () {
-                console.log("Aktualisiert ! ")
+            console.log("Aktualisiert ! ")
         });
         res.send(neu);
     });

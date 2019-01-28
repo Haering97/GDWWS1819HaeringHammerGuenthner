@@ -53,71 +53,81 @@ class Fetcher{
    // Liefert alle Infos zu einer Route/Weg an den Router zurück
     static getInfo(geo1,geo2) {
 
-         return new Promise(function (resolve, reject) {
+        return new Promise(function (resolve, reject) {
+
+            var result = [];
+
+            var promise1 = Fetcher.getVerarbeiteteDaten(geo1,geo2); // Holt sich die lat/long von beiden Orten ( und mehr )
+
+            promise1.then(function (array) {
+                var latlong1 = array[0]; // Infos zum Startpunkt ( lat long plzahl confidence )
+                var latlong2 = array[1];// Infos zum Endpunkt( lat long plzahl confidence )
 
 
-             var promise1 = Fetcher.getVerarbeiteteDaten(geo1,geo2); // Holt sich die lat/long von beiden Orten ( und mehr )
 
-             promise1.then(function (array) {
-                 var latlong1 = array[0]; // Infos zum Startpunkt ( lat long plzahl confidence )
-                 var latlong2 = array[1];// Infos zum Endpunkt( lat long plzahl confidence )
-
-
-                 //var promise3 =  Fetcher.getWeather(latlong1,latlong2);
+                var urlRoute = "https://api.openrouteservice.org/directions?api_key=5b3ce3597851110001cf62489e05bd56cff244a7b5072edc85037ec5&coordinates=" + latlong1[1] +"," + latlong1[0] + "%7C" + latlong2[1] + "," +latlong2[0] + "&profile=foot-hiking&preference=recommended&format=geojson&units=m&language=de&extra_info=surface&geometry_simplify=true&instructions=true&instructions_format=html&elevation=true" ;
+                console.log(urlRoute);
+                var promise2 = Fetcher.coordinates(urlRoute); // Holt Route zwischen 2 Punkten
 
 
-                 var urlRoute = "https://api.openrouteservice.org/directions?api_key=5b3ce3597851110001cf62489e05bd56cff244a7b5072edc85037ec5&coordinates=" + latlong1[1] +"," + latlong1[0] + "%7C" + latlong2[1] + "," +latlong2[0] + "&profile=foot-hiking&preference=recommended&format=geojson&units=m&language=de&extra_info=surface&geometry_simplify=true&instructions=true&instructions_format=html&elevation=true" ;
-                 console.log(urlRoute);
-                 var promise2 = Fetcher.coordinates(urlRoute); // Holt Route zwischen 2 Punkten
+                var coordinates;
+                var summary;
+                var coordinatesType;
+                var timestamp;
+                var instructions;
+                var pois;
+                promise2.then(function (data) {
+                    coordinates = data.features[0].geometry.coordinates; // Alle Punkte auf der Route
+                    summary = data.features[0].properties.summary[0]; // Zusammenfassung , Dauer , Entfernung , m bergab/bergauf
+                    coordinatesType = data.features[0].geometry.type; // Typ der Koordinaten
+                    timestamp = data.info.timestamp; // Zeitstempel
+                    instructions = data.features[0].properties.segments[0].steps;
 
+                    // Höchster Punkt auf der Route
+                    var highest = [0,0,0];
+                    coordinates.forEach(function (element,index) {
+                        if(element[2]>highest[2])highest = element;
+                    });
 
-                 promise2.then(function (data) {
-                     var coordinates = data.features[0].geometry.coordinates; // Alle Punkte auf der Route
-                     var summary = data.features[0].properties.summary[0]; // Zusammenfassung , Dauer , Entfernung , m bergab/bergauf
-                     var coordinatesType = data.features[0].geometry.type; // Typ der Koordinaten
-                     var timestamp = data.info.timestamp; // Zeitstempel
-                     var instructions = data.features[0].properties.segments[0].steps;
-                     //var pois = poi.getPOIsNähe(coordinates);
+                    var instructionsArray = [];
 
-
-                     // Höchster Punkt auf der Route
-                     var highest = [0,0,0];
-                     coordinates.forEach(function (element,index) {
-                         if(element[2]>highest[2])highest = element;
-                     });
-
-                     var instructionsArray = [];
-
-                     instructions.forEach(function (element) {
+                    instructions.forEach(function (element) {
                         instructionsArray.push(element.instruction);
-                     });
+                    });
 
-                     var luftlinie = poi.measure(latlong1[0],latlong1[1],latlong2[0],latlong2[1])/1000;
-
-                     var result = [];
+                    var luftlinie = poi.measure(latlong1[0],latlong1[1],latlong2[0],latlong2[1])/1000;
 
 
-                     result.push(coordinates,summary,luftlinie,timestamp,highest,instructionsArray);
+                    result.push(coordinates,summary,luftlinie,timestamp,highest,instructionsArray);
 
-                     // pois.then(function (data) {
-                     //        result.push(data);
-                     // });
 
-                     if(summary != null && coordinates != null && instructionsArray != null && luftlinie != null)resolve(result);
-                     else reject("err In GetInfo");
-                 });
+                    var poisPromise = poi.getPOIsNähe(coordinates);
 
-                    // Falls keine Route gefunden wird ( oder generell Error )
-                 promise2.catch(function (err) {
-                     console.log(err);
-                 });
-             });
+                    poisPromise.then(function (data) {
+                        pois = data;
+                        result.push(pois);
+                        if(summary != null && coordinates != null && instructionsArray != null && luftlinie != null && pois != null)resolve(result);
+                        else reject("err In GetInfo");
+                    });
 
-             promise1.catch(function (err) {
-                 console.log("Konnte nicht beide Orte in lat/long umwandeln");
-             })
-         });
-     }
+                    poisPromise.catch(function (err) {
+                        console.log(err);
+                    });
+
+
+                });
+
+                // Falls keine Route gefunden wird ( oder generell Error )
+                promise2.catch(function (err) {
+                    console.log(err);
+                });
+            });
+
+            promise1.catch(function (err) {
+                console.log("Konnte nicht beide Orte in lat/long umwandeln");
+            })
+        });
+    }
 
 
     /* Wird von GetInfo benutzt zum lat/long von Orten abzufragen  */

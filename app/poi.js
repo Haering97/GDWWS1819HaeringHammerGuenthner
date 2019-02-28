@@ -47,7 +47,7 @@ class Poi{
 
                                 }
                                     catch (e) {
-                                        console.log(e);
+
                                     }
                         }
                     }

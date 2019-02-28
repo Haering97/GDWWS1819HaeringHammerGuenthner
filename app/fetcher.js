@@ -1,5 +1,6 @@
 var poi = require('./poi');
 var fs = require('fs');
+var path = require('path');
 class Fetcher{
 
     // Noch nicht ordentlich implementiert

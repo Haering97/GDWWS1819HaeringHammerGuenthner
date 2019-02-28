@@ -85,8 +85,8 @@ class Fetcher{
                     var startWeather = await startWeatherResponse.json();
                     var threeTempList = [];
 
-                    var i;
-                    for (i = 0; i < 3; i++) {
+
+                    for (let i = 0; i < 3; i++) {
                         threeTempList.push(startWeather.list[i].dt_txt, startWeather.list[i].main.temp)
                     }
 

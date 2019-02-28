@@ -29,9 +29,10 @@ class Poi{
         return new Promise(function (resolve, reject) {
 
             var fs = require('fs');
+            var path = require('path');
             var pois;
             var result =[];
-            fs.readFile('./pois/pois.json', function (err,file) {
+            fs.readFile(path.join(__dirname, '..', 'pois/pois.json'), function (err,file) {
                 if(err) {
                     throw err;
                 }

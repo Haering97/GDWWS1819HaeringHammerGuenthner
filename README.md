@@ -19,7 +19,7 @@
 
 | URL      |     Verb     |Beschreibung                               | Rückgabetyp |Parameter|
 |----------|--------------|-------------------------------------------|-------------|---------|
-|/poi/ | GET            | gibt alle POI+s zurück  | JSON        |  ID  |   
+|/poi | GET            | gibt alle POI+s zurück  | JSON        |  ID  |   
 |/poi/id | GET          | gibt POI zurück  | JSON        |  ID  |   
 | /poi/id|  POST        | erstellt einen POI und speichert diesen   | JSON        |Latitude(lat),Longitude(lon),Kategorie(kat),ID |  
 | /poi/id|    PUT       | aktualisiert einen POI falls vorhanden| JSON        | Latitude(lat),Longitude(lon),Kategorie(kat), ID |

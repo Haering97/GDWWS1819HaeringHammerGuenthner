@@ -92,7 +92,7 @@ class Fetcher{
                     }
 
 
-                    var checkTemp = 5;
+                    var checkTemp = 4;
                     var tempAlert = "Keine Temperaturwarnung!"
 
                     if(startWeather.list[0].main.temp - startWeather.list[1].main.temp > checkTemp){

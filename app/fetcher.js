@@ -117,7 +117,7 @@ class Fetcher{
 
                 }
 
-                    result.push(coordinates,summary,poiNah,instructionsArray,timestamp,tempAlert,rainAlert,threeTempList);
+                    result.push(summary,poiNah,instructionsArray,tempAlert,rainAlert,threeTempList,coordinates,timestamp);
                     resolve(result);
             }
         });

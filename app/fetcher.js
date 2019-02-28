@@ -83,7 +83,8 @@ class Fetcher{
                         "lat=" + koordinaten[0][0] + "&lon=" + koordinaten[0][1]
                         + "&units=metric&appid=fdfdaf78b353c4f917159c1d838d1ab3");
 
-                    var startWeather = await startWeatherResponse.json();
+                    var startWeather = await startWea
+                    therResponse.json();
                     var threeTempList = [];
 
 

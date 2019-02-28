@@ -93,9 +93,9 @@ class Fetcher{
 
 
                     var checkTemp = 4;
-                    var tempAlert = "Keine Temperaturwarnung!"
+                    var tempAlert = "Keine Temperaturwarnung!" //wenn das if statement nicht erfüllt wird bleibt es
 
-                    if(startWeather.list[0].main.temp - startWeather.list[1].main.temp > checkTemp){
+                    if(startWeather.list[0].main.temp - startWeather.list[1].main.temp > checkTemp){ // falls die temperatur um den Wert Checktemp abfällt wird tempAlert neu gesetzt
                         tempAlert = "Vorsicht in den nächsten Stunden sinkt die Temperatur um "+ checkTemp +" Grad Celsius!"
                     }
 

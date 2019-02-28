@@ -96,7 +96,7 @@ class Fetcher{
                     var tempAlert = "Keine Temperaturwarnung!"
 
                     if(startWeather.list[0].main.temp - startWeather.list[1].main.temp > checkTemp){
-                        tempAlert = "Vorsicht in den nächsten 3 Stunden sinkt die Temperatur um "+ checkTemp +" Grad Celsius!"
+                        tempAlert = "Vorsicht in den nächsten Stunden sinkt die Temperatur um "+ checkTemp +" Grad Celsius!"
                     }
 
                     var rainAlert = "Keine Regenwarnung!";

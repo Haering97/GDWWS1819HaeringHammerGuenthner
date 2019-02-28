@@ -78,6 +78,34 @@ class Fetcher{
                         instructionsArray.push(element.instruction);
                     });
 
+                    var startWeatherResponse = await fetch("https://api.openweathermap.org/data/2.5/forecast?" +
+                        "lat=" + koordinaten[0][0] + "&lon=" + koordinaten[0][1]
+                        + "&units=metric&appid=fdfdaf78b353c4f917159c1d838d1ab3");
+
+                    var startWeather = await startWeatherResponse.json();
+                    var threeTempList = [];
+
+                    var i;
+                    for (i = 0; i < 3; i++) {
+                        threeTempList.push(startWeather.list[i].dt_txt, startWeather.list[i].main.temp)
+                    }
+
+
+                    var checkTemp = 5;
+                    var tempAlert = "Keine Temperaturwarnung!"
+
+                    if(startWeather.list[0].main.temp - startWeather.list[1].main.temp > checkTemp){
+                        tempAlert = "Vorsicht in den nächsten 3 Stunden sinkt die Temperatur um "+ checkTemp +" Grad Celsius!"
+                    }
+
+                    var rainAlert = "Keine Regenwarnung!";
+
+                    if(startWeather.list[0].weather[0].main == "Rain" && startWeather.list[1].weather[0].main == "Rain"){
+                        rainAlert = "Voraussichtlich wird es unterwegs regnen!"
+                    }
+
+
+
                 }catch (e) {
                     console.log(e);
                 }
@@ -88,7 +116,7 @@ class Fetcher{
 
                 }
 
-                    result.push(coordinates,summary,poiNah,instructionsArray,timestamp,coordinatesType);
+                    result.push(coordinates,summary,poiNah,instructionsArray,timestamp,tempAlert,rainAlert,threeTempList);
                     resolve(result);
             }
         });

@@ -60,12 +60,14 @@ class Fetcher{
 
                 try {
 
+
                     var responseRoute = await fetch("https://api.openrouteservice.org/directions?api_key=5b3ce3597851110001cf62489e05bd56cff244a7b5072edc85037ec5&coordinates="
                         + koordinaten[0][1] +"," + koordinaten[0][0] + "%7C" + koordinaten[1][1] + "," +koordinaten[1][0] +
-                        "&profile=foot-hiking&preference=recommended&format=geojson&units=m&language=de&extra_info=surface&geometry_simplify=true&instructions=true&instructions_format=html&elevation=true"
+                        "&profile=foot-hiking&preference=recommended&format=geojson&units=m&language=de&geometry_simplify=true&instructions=true&instructions_format=html&elevation=true"
                     );
 
                     var route = await responseRoute.json();
+                    console.log(route);
 
 
                     var coordinates = route.features[0].geometry.coordinates; // Alle Punkte auf der Route
@@ -83,8 +85,7 @@ class Fetcher{
                         "lat=" + koordinaten[0][0] + "&lon=" + koordinaten[0][1]
                         + "&units=metric&appid=fdfdaf78b353c4f917159c1d838d1ab3");
 
-                    var startWeather = await startWea
-                    therResponse.json();
+                    var startWeather = await startWeatherResponse.json();
                     var threeTempList = [];
 
 
@@ -110,6 +111,7 @@ class Fetcher{
 
                 }catch (e) {
                     console.log(e);
+                    reject("Error ");
                 }
 
                 if(coordinates){

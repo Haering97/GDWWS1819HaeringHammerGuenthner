@@ -67,8 +67,6 @@ class Fetcher{
                     );
 
                     var route = await responseRoute.json();
-                    console.log(route);
-
 
                     var coordinates = route.features[0].geometry.coordinates; // Alle Punkte auf der Route
                     var summary = route.features[0].properties.summary[0]; // Zusammenfassung , Dauer , Entfernung , m bergab/bergauf
